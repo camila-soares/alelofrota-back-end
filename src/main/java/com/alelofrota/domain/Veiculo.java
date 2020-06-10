@@ -11,9 +11,11 @@ import javax.persistence.Table;
 
 import com.alelofrota.enuns.StatusVeiculo;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 @Entity
 @Builder

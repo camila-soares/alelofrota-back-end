@@ -42,7 +42,7 @@ public class VeiculoServiceTest {
 	public void deveAtualizarUmVeiculo() {
 		
 		Veiculo veiculoSalvo = criarVeiculo();
-		veiculoSalvo.setId(1l);
+		veiculoSalvo.getId();
 		
 		when(repoRepository.save(veiculoSalvo)).thenReturn(veiculoSalvo);
 		
@@ -53,7 +53,7 @@ public class VeiculoServiceTest {
 	@Test
 	public void deveDeletarUmVeiculo() {
 		Veiculo veiculoSalvar = criarVeiculo();
-		veiculoSalvar.setId(1l);
+		veiculoSalvar.getId();
 		service.deletar(veiculoSalvar);
 		
 		verify(repoRepository).delete(veiculoSalvar);
@@ -64,7 +64,7 @@ public class VeiculoServiceTest {
 		Long id = 1l;
 		
 		Veiculo veiculo = criarVeiculo();
-		veiculo.setId(id);
+		//veiculo.setId(id);
 		
 		when( repoRepository.findById(id)).thenReturn(Optional.of(veiculo));
 		Optional<Veiculo> resultado = service.obterPorId(id);
@@ -76,7 +76,7 @@ public class VeiculoServiceTest {
 		Long id = 1l;
 		
 		Veiculo veiculo = criarVeiculo();
-		veiculo.setId(id);
+		//veiculo.setId(id);
 		
 		when( repoRepository.findById(id)).thenReturn(Optional.empty());
 		
@@ -89,7 +89,8 @@ public class VeiculoServiceTest {
 	
 	
 	public static Veiculo criarVeiculo() {
-		return Veiculo.builder().marca("fiat")
+		return Veiculo.builder().id(1l)
+								.marca("fiat")
 								.modelo("palio")
 								.placa("hhh-9090")
 								.build();

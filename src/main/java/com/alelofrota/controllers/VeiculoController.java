@@ -41,26 +41,18 @@ public class VeiculoController {
 		}
 	}
 	
-	private Veiculo converter(VeiculoDTO dto) {
-		
-			Veiculo veiculo = new Veiculo();
-			veiculo.setId(dto.getId());
-			veiculo.setPlaca(dto.getMarca());
-			veiculo.setModelo(dto.getModelo());
-			veiculo.setMarca(dto.getMarca());
-			veiculo.setStatus(dto.getStatus());
-			
-			return veiculo;
-		
+	public Veiculo converter(VeiculoDTO objDTO) {
+		return new Veiculo(objDTO.getId(), objDTO.getMarca(), objDTO.getModelo(), 
+				objDTO.getPlaca(), objDTO.getStatus());
 	}
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		return service.obterPorId(id).map(entidade -> {
 			service.deletar(entidade);
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 		}).orElseGet(() ->
-		new ResponseEntity("Lancamento nao encontrado na bade de dados.", HttpStatus.BAD_REQUEST));
+		new ResponseEntity("veiculo nao encontrado na bade de dados.", HttpStatus.BAD_REQUEST));
 	}
 	
 	
@@ -83,17 +75,13 @@ public class VeiculoController {
 	}
 	
 	@PutMapping("{id}")
-	public ResponseEntity autualizar(@PathVariable("id") Long id, @RequestBody VeiculoDTO dto) {
+	public ResponseEntity<Veiculo> autualizar(@PathVariable("id") Long id, @RequestBody Veiculo veiculo) {
 		return service.obterPorId(id).map(entity -> {
-			try {
-				Veiculo veiculo = converter(dto);
-				veiculo.setId(entity.getId());
-				service.atualizar(veiculo);
-				return ResponseEntity.ok(veiculo);
-			}catch (RegraNegocioException e) {
-				return ResponseEntity.badRequest()
-						.body(e.getMessage());
-			}
+			entity.setMarca(veiculo.getMarca());
+			entity.setModelo(veiculo.getModelo());
+			entity.setStatus(veiculo.getStatus());
+			service.atualizar(entity);
+			return ResponseEntity.ok(veiculo);
 			}).orElseGet(()-> 
 		new ResponseEntity("veiculo nao encontrado na base de dados.", HttpStatus.BAD_REQUEST));
 	}

@@ -41,7 +41,8 @@ public class VeiculoService {
 			return repository.findAll(example);
 		}
 		
-	
+		
+		
 		@Transactional
 		public Veiculo atualizar(Veiculo veiculo) {
 			Objects.requireNonNull(veiculo.getId());
