@@ -1,6 +1,11 @@
 package com.alelofrota.exceptions;
 
-public class RegraNegocioException extends Exception {
+public class RegraNegocioException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public RegraNegocioException(String msg) {
 		super(msg);

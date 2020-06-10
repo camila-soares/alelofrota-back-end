@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;		
 
 import com.alelofrota.domain.Veiculo;
+import com.alelofrota.dtos.VeiculoDTO;
 import com.alelofrota.exceptions.RegraNegocioException;
 import com.alelofrota.services.VeiculoService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/veiculo")
+@RequestMapping("/veiculo")
 @RequiredArgsConstructor
 public class VeiculoController {
 	
@@ -30,13 +30,32 @@ public class VeiculoController {
 	private final VeiculoService service;
 	
 	@PostMapping
-	public ResponseEntity salvar(@RequestBody Veiculo veiculo) {
-		veiculo = service.salva(veiculo);
-		return new ResponseEntity(veiculo, HttpStatus.CREATED);
+	public ResponseEntity<String> salvar(@RequestBody VeiculoDTO dto) {
+		try {
+		Veiculo entidade = converter(dto);
+		entidade = service.salva(entidade);
+		return new ResponseEntity(entidade, HttpStatus.CREATED);
+		}catch (RegraNegocioException e) {
+			return ResponseEntity.badRequest()
+					.body(e.getMessage());
+		}
 	}
 	
+	private Veiculo converter(VeiculoDTO dto) {
+		
+			Veiculo veiculo = new Veiculo();
+			veiculo.setId(dto.getId());
+			veiculo.setPlaca(dto.getMarca());
+			veiculo.setModelo(dto.getModelo());
+			veiculo.setMarca(dto.getMarca());
+			veiculo.setStatus(dto.getStatus());
+			
+			return veiculo;
+		
+	}
+
 	@DeleteMapping("{id}")
-	public ResponseEntity deletar(@PathVariable("id") Long id) {
+	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		return service.obterPorId(id).map(entidade -> {
 			service.deletar(entidade);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -46,7 +65,7 @@ public class VeiculoController {
 	
 	
 	@GetMapping
-	public ResponseEntity buscar(
+	public ResponseEntity<List<Veiculo>> buscar(
 			
 	@RequestParam(value = "marca", required = false)String marca,
 	@RequestParam(value = "placa", required = false)String placa, 
@@ -64,13 +83,19 @@ public class VeiculoController {
 	}
 	
 	@PutMapping("{id}")
-	public ResponseEntity autualizar(@PathVariable("id") Long id, @RequestBody Veiculo veiculo) {
+	public ResponseEntity autualizar(@PathVariable("id") Long id, @RequestBody VeiculoDTO dto) {
 		return service.obterPorId(id).map(entity -> {
-			veiculo.setId(entity.getId());
-			service.atualizar(veiculo);
-			return ResponseEntity.ok(veiculo);
+			try {
+				Veiculo veiculo = converter(dto);
+				veiculo.setId(entity.getId());
+				service.atualizar(veiculo);
+				return ResponseEntity.ok(veiculo);
+			}catch (RegraNegocioException e) {
+				return ResponseEntity.badRequest()
+						.body(e.getMessage());
+			}
 			}).orElseGet(()-> 
-		new ResponseEntity("lancamento nao encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+		new ResponseEntity("veiculo nao encontrado na base de dados.", HttpStatus.BAD_REQUEST));
 	}
 
 }
