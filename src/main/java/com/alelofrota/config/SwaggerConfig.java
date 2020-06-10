@@ -44,7 +44,7 @@ public class SwaggerConfig {
                 .globalResponseMessage(RequestMethod.DELETE, Arrays.asList(m204del, m403, m404, m500))
 
                 .select ()
-                .apis (RequestHandlerSelectors.basePackage ("exam.controller"))
+                .apis (RequestHandlerSelectors.basePackage ("com.alelofrota.controllers"))
                 .paths (PathSelectors.any ())
                 .build ()
                 .apiInfo ( apiInfo () );

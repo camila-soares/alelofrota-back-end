@@ -1,4 +1,4 @@
-package com.alelofrota.domain;
+package com.alelofrota.controllers;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alelofrota.domain.Veiculo;
 import com.alelofrota.exceptions.RegraNegocioException;
 import com.alelofrota.services.VeiculoService;
 

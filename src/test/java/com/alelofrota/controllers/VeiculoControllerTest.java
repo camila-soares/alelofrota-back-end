@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.alelofrota.domain.Veiculo;
-import com.alelofrota.domain.VeiculoController;
 import com.alelofrota.enuns.StatusVeiculo;
 import com.alelofrota.repositories.VeiculoRepository;
 import com.alelofrota.services.VeiculoService;
@@ -67,6 +66,30 @@ mvc.perform(request)
 .andExpect(MockMvcResultMatchers.jsonPath("placa").value(veiculo.getPlaca()) );
 
 		
+	}
+	
+	@Test
+	public void deveAtualizarUmVeiculo() throws Exception {
+		
+		String modelo = "suv";
+		String marca = "chrvrolet";
+		String placa = "phd-7777";
+		
+		Veiculo veiculo = Veiculo.builder().marca(marca)
+				.modelo(modelo).placa(placa).build();
+		
+		when(service.atualizar(Mockito.any(Veiculo.class)) ).thenReturn(veiculo);
+		
+		String json = new ObjectMapper().writeValueAsString(veiculo);
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.post(API )
+				.accept(JSON)
+				.contentType(JSON)
+				.content(json);
+
+mvc.perform(request)
+.andExpect(MockMvcResultMatchers.status().isCreated() );		
 	}
 
 }
