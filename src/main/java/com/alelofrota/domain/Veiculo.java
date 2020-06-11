@@ -15,18 +15,18 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "veiculo")
 public class Veiculo {
 	
-	public Veiculo() {
-		// TODO Auto-generated constructor stub
-	}
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
