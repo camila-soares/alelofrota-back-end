@@ -30,6 +30,7 @@ public class Veiculo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter(value = AccessLevel.NONE)
 	@Column(name = "id")
 	private Long id;
 	
