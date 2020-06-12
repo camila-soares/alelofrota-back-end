@@ -3,10 +3,7 @@ package com.alelofrota.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alelofrota.domain.Veiculo;
 import com.alelofrota.dtos.VeiculoDTO;
-import com.alelofrota.enuns.StatusVeiculo;
 import com.alelofrota.exceptions.RegraNegocioException;
 import com.alelofrota.services.VeiculoService;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 @CrossOrigin(origins= "http://localhost:4200")
 @RestController
@@ -39,7 +34,7 @@ public class VeiculoController {
 	private final VeiculoService service;
 	
 	@PostMapping
-	public ResponseEntity<String> salvar(@RequestBody @Valid VeiculoDTO dto) {
+	public ResponseEntity<String> salvar(@RequestBody VeiculoDTO dto) {
 		try {
 		Veiculo entidade = converter(dto);
 		entidade = service.salva(entidade);
@@ -51,8 +46,9 @@ public class VeiculoController {
 	}
 	
 	public Veiculo converter(VeiculoDTO objDTO) {
-		return new Veiculo(objDTO.getId(), objDTO.getMarca(), objDTO.getModelo(), 
-				objDTO.getPlaca(), objDTO.getStatus());
+		return new Veiculo(objDTO.getId(), objDTO.getPlaca(),
+				 objDTO.getModelo(),objDTO.getMarca(),
+				 objDTO.getStatus());
 	}
 
 	@DeleteMapping("{id}")
@@ -65,21 +61,23 @@ public class VeiculoController {
 	}
 	
 	
-	@GetMapping("/") 
-	public Page<Veiculo> buscar(
+	@GetMapping
+	public ResponseEntity<List<Veiculo>> buscar(
 			
-	@RequestParam(value = "searchTerm", required = false)String searchTerm,
-	@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-	@RequestParam(value = "size", required = false, defaultValue = "0") int size){
+	@RequestParam(value = "placa", required = false)String placa, 
+	@RequestParam(value = "modelo", required = false) String modelo,
+	@RequestParam(value = "marca", required = false)String marca
+	) {
 		
-		return service.search(searchTerm, page, size);
+		Veiculo veiculoFiltro = new Veiculo();
+		veiculoFiltro.setPlaca(placa);
+		veiculoFiltro.setModelo(modelo);
+		veiculoFiltro.setMarca(marca);
+		
+		List<Veiculo> veiculos = service.buscar(veiculoFiltro);
+		return ResponseEntity.ok(veiculos);
 		
 	}
-	
-	@GetMapping
-    public Page<Veiculo> buscarTodos() {
-        return service.buscarTodos();
-    }
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Veiculo>> find(@PathVariable Long id) {
@@ -90,8 +88,9 @@ public class VeiculoController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Veiculo> autualizar(@PathVariable("id") Long id, @RequestBody Veiculo veiculo) {
 		return service.obterPorId(id).map(entity -> {
-			entity.setMarca(veiculo.getMarca());
+			entity.setPlaca(veiculo.getPlaca());
 			entity.setModelo(veiculo.getModelo());
+			entity.setMarca(veiculo.getMarca());
 			entity.setStatus(veiculo.getStatus());
 			service.atualizar(entity);
 			return ResponseEntity.ok(entity);
