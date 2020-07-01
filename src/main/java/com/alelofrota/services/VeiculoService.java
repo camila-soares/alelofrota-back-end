@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.alelofrota.domain.Veiculo;
@@ -17,17 +21,46 @@ import com.alelofrota.repositories.VeiculoRepository;
 
 @Service
 public class VeiculoService {
-	
+
 	@Autowired
 	private VeiculoRepository repository;
-	
-	
+
+
 	@Transactional
 	public Veiculo salva(Veiculo veiculo) {
 		return repository.save(veiculo);
-		
+
 	}
 	
+	public Page<Veiculo> search(
+            String searchTerm,
+            int page,
+            int size) {
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size,
+                Sort.Direction.ASC,
+                "name");
+
+        return repository.seach(
+                searchTerm.toLowerCase(),
+                pageRequest);
+    }
+	
+	public Page<Veiculo> findAll() {
+        int page = 0;
+        int size = 10;
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size,
+                Sort.Direction.ASC,
+                "name");
+        return new PageImpl<>(
+                repository.findAll(), 
+                pageRequest, size);
+    }
+
+
 	public Optional<Veiculo> obterPorId(Long id) {
 		return repository.findById(id);
 	}

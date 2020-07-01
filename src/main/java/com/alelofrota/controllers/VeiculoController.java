@@ -3,7 +3,10 @@ package com.alelofrota.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +37,7 @@ public class VeiculoController {
 	private final VeiculoService service;
 	
 	@PostMapping
-	public ResponseEntity<String> salvar(@RequestBody VeiculoDTO dto) {
+	public ResponseEntity<String> salvar(@RequestBody @Valid VeiculoDTO dto) {
 		try {
 		Veiculo entidade = converter(dto);
 		entidade = service.salva(entidade);
@@ -46,9 +49,8 @@ public class VeiculoController {
 	}
 	
 	public Veiculo converter(VeiculoDTO objDTO) {
-		return new Veiculo(objDTO.getId(), objDTO.getPlaca(),
-				 objDTO.getModelo(),objDTO.getMarca(),
-				 objDTO.getStatus());
+		return new Veiculo(objDTO.getId(), objDTO.getMarca(), objDTO.getModelo(), 
+				objDTO.getPlaca(), objDTO.getStatus());
 	}
 
 	@DeleteMapping("{id}")
@@ -61,23 +63,28 @@ public class VeiculoController {
 	}
 	
 	
-	@GetMapping
-	public ResponseEntity<List<Veiculo>> buscar(
-			
-	@RequestParam(value = "placa", required = false)String placa, 
-	@RequestParam(value = "modelo", required = false) String modelo,
-	@RequestParam(value = "marca", required = false)String marca
-	) {
-		
-		Veiculo veiculoFiltro = new Veiculo();
-		veiculoFiltro.setPlaca(placa);
-		veiculoFiltro.setModelo(modelo);
-		veiculoFiltro.setMarca(marca);
-		
-		List<Veiculo> veiculos = service.buscar(veiculoFiltro);
-		return ResponseEntity.ok(veiculos);
-		
-	}
+	
+    @GetMapping("/search")
+    public Page<Veiculo> search(
+            @RequestParam("searchTerm") String searchTerm,
+            @RequestParam(
+                    value = "page",
+                    required = false,
+                    defaultValue = "0") int page,
+            @RequestParam(
+                    value = "size",
+                    required = false,
+                    defaultValue = "10") int size) {
+        return service.search(searchTerm, page, size);
+
+    }
+
+    @GetMapping
+    public Page<Veiculo> getAll() {
+        return service.findAll();
+    }
+	
+
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Veiculo>> find(@PathVariable Long id) {
