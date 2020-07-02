@@ -42,13 +42,15 @@ public class VeiculoControllerTest {
 		String modelo = "suv";
 		String marca = "chrvrolet";
 		String placa = "phd-7777";
+		String color = "black";
 		
 		
 		Veiculo veiculo = Veiculo.builder()
 				.id(id)
-				.marca(marca)
-				.modelo(modelo)
-				.placa(placa)
+				.manufacturer(marca)
+				.model(modelo)
+				.plate(placa)
+				.color(color)
 				.build();
 		
 		when(service.salva(Mockito.any(Veiculo.class)) ).thenReturn(veiculo);
@@ -72,9 +74,10 @@ mvc.perform(request);
 		String modelo = "suv";
 		String marca = "chrvrolet";
 		String placa = "phd-7777";
+		String color = "black";
 		
-		Veiculo veiculo = Veiculo.builder().marca(marca)
-				.modelo(modelo).placa(placa).build();
+		Veiculo veiculo = Veiculo.builder().manufacturer(marca)
+				.model(modelo).plate(placa).color(color).build();
 		
 		when(service.atualizar(Mockito.any(Veiculo.class)) ).thenReturn(veiculo);
 		

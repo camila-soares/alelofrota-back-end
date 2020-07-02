@@ -25,6 +25,7 @@ import com.alelofrota.domain.Veiculo;
 import com.alelofrota.dtos.VeiculoDTO;
 import com.alelofrota.exceptions.RegraNegocioException;
 import com.alelofrota.services.VeiculoService;
+
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins= "http://localhost:4200")
@@ -49,8 +50,8 @@ public class VeiculoController {
 	}
 	
 	public Veiculo converter(VeiculoDTO objDTO) {
-		return new Veiculo(objDTO.getId(), objDTO.getMarca(), objDTO.getModelo(), 
-				objDTO.getPlaca(), objDTO.getStatus());
+		return new Veiculo(objDTO.getId(),objDTO.getPlate(), objDTO.getModel(), objDTO.getManufacturer(), objDTO.getColor(), 
+				  objDTO.getStatus());
 	}
 
 	@DeleteMapping("{id}")
@@ -66,16 +67,12 @@ public class VeiculoController {
 	
     @GetMapping("/search")
     public Page<Veiculo> search(
-            @RequestParam("searchTerm") String searchTerm,
-            @RequestParam(
-                    value = "page",
-                    required = false,
-                    defaultValue = "0") int page,
-            @RequestParam(
-                    value = "size",
-                    required = false,
-                    defaultValue = "10") int size) {
-        return service.search(searchTerm, page, size);
+            @RequestParam(value = "plate", required = false) String plate,
+            @RequestParam(value = "page",required = false,defaultValue = "0") int page,
+            @RequestParam(value = "size",required = false,defaultValue = "10") int size){
+    		
+    	
+        return service.search(plate, page, size);
 
     }
 
@@ -95,9 +92,10 @@ public class VeiculoController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Veiculo> autualizar(@PathVariable("id") Long id, @RequestBody Veiculo veiculo) {
 		return service.obterPorId(id).map(entity -> {
-			entity.setPlaca(veiculo.getPlaca());
-			entity.setModelo(veiculo.getModelo());
-			entity.setMarca(veiculo.getMarca());
+			
+			entity.setModel(veiculo.getModel());
+			entity.setManufacturer(veiculo.getManufacturer());
+			entity.setColor(veiculo.getColor());
 			entity.setStatus(veiculo.getStatus());
 			service.atualizar(entity);
 			return ResponseEntity.ok(entity);

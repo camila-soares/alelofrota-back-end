@@ -10,11 +10,9 @@ import com.alelofrota.domain.Veiculo;
 
 public interface VeiculoRepository extends JpaRepository<Veiculo, Long>{
 	
-	 @Query("FROM Veiculo v " +
-	           "WHERE LOWER(v.marca) like %:searchTerm% " +
-	           "OR LOWER(v.placa) like %:searchTerm%" )
+	@Query("FROM Veiculo v WHERE v.plate like %:plate% " )
 	Page<Veiculo> seach(
-			@Param("searchTerm") String searchTerm,
+			@Param("plate") String plate,
 			Pageable pegeable);
 
 	//Page<Veiculo> search(String lowerCase, PageRequest pageRequest);

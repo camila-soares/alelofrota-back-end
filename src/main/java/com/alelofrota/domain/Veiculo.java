@@ -34,14 +34,17 @@ public class Veiculo {
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(name = "placa")
-	private String placa;
+	@Column(name = "plate")
+	private String plate;
 	
-	@Column(name = "modelo")
-	private String modelo;
+	@Column(name = "model")
+	private String model;
 	
-	@Column(name = "marca")
-	private String marca;
+	@Column(name = "manufacturer")
+	private String manufacturer;
+	
+	@Column(name = "color")
+	private String color;
 	
 	@Column(name = "status")
 	@Enumerated(value = EnumType.STRING)

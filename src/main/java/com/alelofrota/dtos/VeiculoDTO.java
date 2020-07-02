@@ -16,11 +16,12 @@ public class VeiculoDTO {
 	
 	private Long id;
 	@NotBlank(message = "nao pode ser vazio")
-	private String placa;
+	private String plate;
 	@NotBlank(message = "nao pode ser vazio")
-	private String modelo;
+	private String model;
 	@NotBlank(message = "nao pode ser vazio")
-	private String marca;
+	private String manufacturer;
+	private String color;
 	private StatusVeiculo status;
 
 }

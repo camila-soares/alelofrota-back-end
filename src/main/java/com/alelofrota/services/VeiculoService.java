@@ -33,17 +33,17 @@ public class VeiculoService {
 	}
 	
 	public Page<Veiculo> search(
-            String searchTerm,
+            String plate,
             int page,
             int size) {
         PageRequest pageRequest = PageRequest.of(
                 page,
                 size,
                 Sort.Direction.ASC,
-                "name");
+                "plate");
 
         return repository.seach(
-                searchTerm.toLowerCase(),
+                plate.toLowerCase(),
                 pageRequest);
     }
 	
@@ -54,7 +54,7 @@ public class VeiculoService {
                 page,
                 size,
                 Sort.Direction.ASC,
-                "name");
+                "plate");
         return new PageImpl<>(
                 repository.findAll(), 
                 pageRequest, size);

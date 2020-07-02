@@ -60,25 +60,28 @@ public class VeiculoRepositoryTest {
 	@Test
 	public void deveAtualizarUmVeiculo() {
 		Veiculo veiculo = criarEPersistirUmVeiculo();
-		veiculo.setMarca("honda");
-		veiculo.setModelo("teste atualizar");
+		veiculo.setManufacturer("honda");
+		veiculo.setModel("teste atualizar");
+		veiculo.setColor("black");
 		veiculo.setStatus(StatusVeiculo.INATIVO);
 		
 		repository.save(veiculo);
 		
 		Veiculo veiculoAtualizado = entityManager.find(Veiculo.class, veiculo.getId());
 		
-		assertThat(veiculoAtualizado.getMarca()).isEqualTo("honda");
-		assertThat(veiculoAtualizado.getModelo()).isEqualTo("teste atualizar");
+		assertThat(veiculoAtualizado.getManufacturer()).isEqualTo("honda");
+		assertThat(veiculoAtualizado.getModel()).isEqualTo("teste atualizar");
 		assertThat(veiculoAtualizado.getStatus()).isEqualTo(StatusVeiculo.INATIVO);
+		assertThat(veiculoAtualizado.getColor()).isEqualTo("clack");
 		
 	}
 	
 	
 	public static Veiculo criarVeiculo() {
-		return Veiculo.builder().marca("fiat")
-								.modelo("palio")
-								.placa("hhh-9090")
+		return Veiculo.builder().manufacturer("fiat")
+								.model("palio")
+								.plate("hhh-9090")
+								.color("black")
 								.build();
 	}
 	

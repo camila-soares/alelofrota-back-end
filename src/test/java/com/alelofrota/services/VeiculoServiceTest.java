@@ -90,9 +90,10 @@ public class VeiculoServiceTest {
 	
 	public static Veiculo criarVeiculo() {
 		return Veiculo.builder().id(1l)
-								.marca("fiat")
-								.modelo("palio")
-								.placa("hhh-9090")
+								.manufacturer("fiat")
+								.model("palio")
+								.plate("hhh-9090")
+								.color("black")
 								.build();
 	}
 
