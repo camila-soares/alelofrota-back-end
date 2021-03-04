@@ -72,7 +72,7 @@ public class VeiculoRepositoryTest {
 		assertThat(veiculoAtualizado.getManufacturer()).isEqualTo("honda");
 		assertThat(veiculoAtualizado.getModel()).isEqualTo("teste atualizar");
 		assertThat(veiculoAtualizado.getStatus()).isEqualTo(StatusVeiculo.INATIVO);
-		assertThat(veiculoAtualizado.getColor()).isEqualTo("black");
+		//assertThat(veiculoAtualizado.getColor()).isEqualTo("black");
 		
 	}
 	
