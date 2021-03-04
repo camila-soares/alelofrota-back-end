@@ -1,5 +1,29 @@
 version: 2.1
+jobs:
+  build:
 
+    working_directory: ~/circleci-test
+
+    docker:
+      - image: cicleci/openjdk:8-jdk
+steps:
+
+  - checkout
+  - restore_cache:
+      key: clicleci-test-{{ checksum "pom.xml" }}
+  - run: mvn dependency:go-offline
+
+  - save_cache:
+      paths:
+        - ~/.m2
+      key: circleci-test-{{ checksum "pom.xml" }}
+  - rum: mvn package
+
+      - store_test_results:
+          path: target/surefire-reports
+
+      - store_artifacts:
+          path: target/cicleci-test-0.0.1-SNAPSHOT.jar
 orbs:
   maven: circleci/maven@1.1
 
