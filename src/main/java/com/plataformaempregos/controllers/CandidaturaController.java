@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.plataformaempregos.domain.Candidatura;
+import com.plataformaempregos.domain.ProcessamentoIA;
 import com.plataformaempregos.dtos.AtualizarStatusCandidaturaDTO;
 import com.plataformaempregos.dtos.CandidaturaDTO;
+import com.plataformaempregos.services.AsyncAIService;
 import com.plataformaempregos.services.CandidaturaService;
 
 import io.swagger.annotations.Api;
@@ -30,16 +32,49 @@ public class CandidaturaController {
     @Autowired
     private CandidaturaService candidaturaService;
     
+    @Autowired
+    private AsyncAIService asyncAIService;
+    
     @PostMapping("/candidato/{candidatoId}/vaga/{vagaId}")
     @ApiOperation("Criar nova candidatura")
     public ResponseEntity<CandidaturaDTO> criarCandidatura(
             @PathVariable Long candidatoId,
-            @PathVariable Long vagaId) {
+            @PathVariable Long vagaId,
+            @RequestParam(required = false, defaultValue = "false") boolean processarAssincrono) {
         try {
             Candidatura candidatura = candidaturaService.criarCandidatura(candidatoId, vagaId);
+            
+            // Se processamento assíncrono solicitado, iniciar processamento em background
+            if (processarAssincrono) {
+                asyncAIService.processarAnaliseCandidaturaAsync(
+                        candidatura.getId(), 
+                        candidatoId // Usando candidatoId como usuarioId temporariamente
+                );
+            }
+            
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(candidatura));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    
+    @PostMapping("/{candidaturaId}/processar-analise")
+    @ApiOperation("Processar análise de compatibilidade de forma assíncrona")
+    public ResponseEntity<ProcessamentoIA> processarAnaliseAssincrona(
+            @PathVariable Long candidaturaId,
+            @RequestParam Long usuarioId) {
+        try {
+            // Criar registro de processamento
+            ProcessamentoIA processamento = asyncAIService.criarProcessamentoAnaliseCandidatura(
+                    candidaturaId, usuarioId);
+            
+            // Iniciar processamento assíncrono
+            asyncAIService.processarAnaliseCandidaturaAsync(processamento.getId());
+            
+            // Retorna imediatamente com o processamento criado
+            return ResponseEntity.accepted().body(processamento);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
