@@ -1,0 +1,31 @@
+version: "2"
+authtoken: ${NGROK_AUTHTOKEN}
+
+tunnels:
+  cli-quickstart:
+    proto: http
+    addr: 8080
+    domain: mustiness-bootleg-subzero.ngrok-free.dev
+
+    # Traffic Policy com Google OAuth
+    traffic_policy:
+      enabled: true
+      value:
+        inbound:
+          - name: "enforce-oauth"
+            expressions:
+              - "true"
+            actions:
+              - type: "oauth"
+                config:
+                  provider: "google"
+                  # Você precisa configurar:
+                  # 1. Criar OAuth App no Google Cloud Console
+                  # 2. Adicionar client_id e client_secret aqui
+                  client_id: "${GOOGLE_OAUTH_CLIENT_ID}"
+                  client_secret: "${GOOGLE_OAUTH_CLIENT_SECRET}"
+                  scope: "openid email profile"
+                  inbound_cookie_prefix: "ngrok-oauth"
+                  # Redirecionar usuários não autenticados
+                  auth_check_interval: 0
+                  cookie_duration: 86400

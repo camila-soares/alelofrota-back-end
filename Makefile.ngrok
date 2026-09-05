@@ -1,0 +1,73 @@
+.PHONY: help setup run-server run-ngrok run-ngrok-oauth inspect logs clean
+
+NGROK_TOKEN = 3IU7zmxRvf4yw7MfrsweBCGKRAS_2ZYJoG9MBexS9AK2Ga2Fb
+NGROK_DOMAIN = mustiness-bootleg-subzero.ngrok-free.dev
+PORT = 8080
+
+help:
+	@echo "╔════════════════════════════════════════════════════════════╗"
+	@echo "║      ngrok Agent CLI Quickstart - Makefile Commands        ║"
+	@echo "╚════════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "Comandos disponíveis:"
+	@echo ""
+	@echo "  make setup              - Configurar ngrok (autenticação)"
+	@echo "  make run-server         - Iniciar servidor HTTP na porta 8080"
+	@echo "  make run-ngrok          - Expor com ngrok (sem OAuth)"
+	@echo "  make run-ngrok-oauth    - Expor com ngrok + Traffic Policy OAuth"
+	@echo "  make inspect            - Abrir Traffic Inspector (http://127.0.0.1:4040)"
+	@echo "  make logs               - Ver logs do ngrok"
+	@echo "  make stop               - Parar ngrok"
+	@echo "  make clean              - Limpar configuração"
+	@echo ""
+	@echo "Informações:"
+	@echo "  Token:  $(NGROK_TOKEN)"
+	@echo "  Domain: $(NGROK_DOMAIN)"
+	@echo "  Port:   $(PORT)"
+	@echo ""
+
+setup:
+	@echo "🔑 Configurando autenticação ngrok..."
+	@ngrok config add-authtoken $(NGROK_TOKEN)
+	@ngrok config check
+	@echo "✅ Autenticação configurada!"
+
+run-server:
+	@echo "🚀 Iniciando servidor HTTP na porta $(PORT)..."
+	@python3 ngrok-quickstart-app.py
+
+run-ngrok:
+	@echo "🌐 Expondo com ngrok (sem OAuth)..."
+	@echo "📍 Domain: $(NGROK_DOMAIN)"
+	@ngrok http $(PORT)
+
+run-ngrok-oauth:
+	@echo "🔐 Expondo com ngrok + Traffic Policy OAuth..."
+	@echo "📍 Domain: $(NGROK_DOMAIN)"
+	@echo "⚠️  Certifique-se que ngrok.yml está configurado com Google OAuth credentials"
+	@ngrok start cli-quickstart
+
+inspect:
+	@echo "📊 Abrindo Traffic Inspector..."
+	@echo "   http://127.0.0.1:4040"
+	@command -v open >/dev/null 2>&1 && open "http://127.0.0.1:4040" || \
+	command -v xdg-open >/dev/null 2>&1 && xdg-open "http://127.0.0.1:4040" || \
+	echo "   Abra manualmente: http://127.0.0.1:4040"
+
+logs:
+	@echo "📝 Ver logs do ngrok:"
+	@echo "   Abra Traffic Inspector: http://127.0.0.1:4040"
+
+stop:
+	@echo "🛑 Parando ngrok..."
+	@pkill -f "ngrok" || echo "ngrok não está rodando"
+
+clean:
+	@echo "🗑️  Limpando configuração..."
+	@rm -f ~/.ngrok2/ngrok.yml 2>/dev/null || rm -f ~/.config/ngrok/ngrok.yml 2>/dev/null
+	@echo "✅ Configuração limpa!"
+
+# Equivalentes para lembrar
+server: run-server
+ngrok: run-ngrok
+oauth: run-ngrok-oauth
